@@ -1,4 +1,4 @@
-package co.com.bancolombia.api.dto.res;
+package co.com.bancolombia.api.dto;
 
 import java.math.BigDecimal;
 
@@ -7,7 +7,7 @@ public record LoanApplicationResponse(
     String email,
     BigDecimal amount,
     Integer termMonths,
-    Long loanTypeId,
-    Integer status
+    String loanTypeId,
+    String status
 ) {
 }

@@ -7,18 +7,20 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+///import java.util.UUID;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Table("solicitud")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class LoanEntity {
+public class LoanApplicationEntity {
     @Id
     @Column("id_solicitud")
-    private String id;
+    private UUID id;//UUID
 
     @Column("monto")
     private BigDecimal amount;
@@ -30,8 +32,8 @@ public class LoanEntity {
     private String email;
 
     @Column("id_tipo_prestamo")
-    private Long loanTypeId;
+    private String loanTypeId;
 
     @Column("id_estado")
-    private Long statusId;
+    private String statusId;
 }

@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8017
 spring:
   application:
     name: "LoanApplication"
@@ -11,10 +11,21 @@ spring:
       path: "/h2"
   profiles:
     include: null
+
 adapter:
   restconsumer:
     timeout: 5000
-    url: "http://localhost:8080"
+    url: "http://localhost:8016"
+
+adapters:
+  r2dbc:
+    host: "localhost"
+    port: 5431
+    database: "credi-loan"
+    schema: "public"
+    username: "joseloc"
+    password: "crediya"
+
 management:
   health:
     circuitbreakers:
@@ -27,26 +38,16 @@ management:
     health:
       probes:
         enabled: true
+
 resilience4j:
   circuitbreaker:
     instances:
-      testGet:
-        registerHealthIndicator: true
-        failureRateThreshold: 50
-        slowCallRateThreshold: 50
-        slowCallDurationThreshold: "2s"
-        permittedNumberOfCallsInHalfOpenState: 3
+      auth-exists:
         slidingWindowSize: 10
-        minimumNumberOfCalls: 10
-        waitDurationInOpenState: "10s"
-      testPost:
-        registerHealthIndicator: true
         failureRateThreshold: 50
-        slowCallRateThreshold: 50
-        slowCallDurationThreshold: "2s"
+        waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 3
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 10
-        waitDurationInOpenState: "10s"
+        minimumNumberOfCalls: 5
+
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"

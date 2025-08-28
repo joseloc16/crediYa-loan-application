@@ -1,4 +1,4 @@
-package co.com.bancolombia.api.dto.req;
+package co.com.bancolombia.api.dto;
 
 
 import jakarta.validation.constraints.*;
@@ -22,7 +22,7 @@ public record CreateLoanApplicationRequest(
     String email,
 
     @NotNull
-    Long loanTypeId
+    String loanTypeId
 ) {
 }
 

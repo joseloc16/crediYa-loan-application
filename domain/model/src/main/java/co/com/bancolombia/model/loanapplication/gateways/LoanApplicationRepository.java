@@ -5,5 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface LoanApplicationRepository {
     Mono<LoanApplication> save(LoanApplication app);
-    Mono<LoanApplication> findById(String id);
+    Mono<LoanApplication> findByEmail(String email);
 }

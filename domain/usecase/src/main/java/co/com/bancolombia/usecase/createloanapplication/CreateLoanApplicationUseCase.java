@@ -1,9 +1,11 @@
 package co.com.bancolombia.usecase.createloanapplication;
 
 import co.com.bancolombia.model.loanapplication.LoanApplication;
-import co.com.bancolombia.model.loanapplication.enums.LoanType;
+import co.com.bancolombia.model.loanapplication.exceptions.TypeNotFoundException;
 import co.com.bancolombia.model.loanapplication.exceptions.UserNotFoundException;
 import co.com.bancolombia.model.loanapplication.gateways.LoanApplicationRepository;
+import co.com.bancolombia.model.loanapplication.gateways.LoanStatusRepository;
+import co.com.bancolombia.model.loanapplication.gateways.LoanTypeRepository;
 import co.com.bancolombia.model.loanapplication.gateways.UserGateway;
 import co.com.bancolombia.usecase.createloanapplication.input.CreateLoanUseCasePort;
 import lombok.RequiredArgsConstructor;
@@ -12,27 +14,27 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class CreateLoanApplicationUseCase implements CreateLoanUseCasePort {
 
-    private final LoanApplicationRepository loanRepository;
     private final UserGateway userGateway;
+    private final LoanTypeRepository loanTypeRepository;
+    private final LoanStatusRepository loanStatusRepository;
+    private final LoanApplicationRepository loanApplicationRepository;
 
     @Override
-    public Mono<LoanApplication> execute(LoanApplication application) {
-        return validateUserExists(application.getEmail())
-            .then(validateTypeExists(application))
-            .then(loanRepository.save(application));
-    }
-
-    private Mono<Void> validateUserExists(String email) {
-        return userGateway.existsByEmail(email)
-            .filter(exists -> exists)
-            .switchIfEmpty(Mono.error(new UserNotFoundException(email)))
-            .then();
-    }
-
-    private Mono<Void> validateTypeExists(LoanApplication application) {
-        return Mono.fromRunnable(() -> {
-            LoanType type = LoanType.fromId(application.getLoanTypeId());
-            type.validate(application.getAmount(), application.getTermMonths());
-        });
+    public Mono<LoanApplication> execute(CreateLoanApplicationCommand  application) {
+        return userGateway.findByEmail(application.email())
+            .switchIfEmpty(Mono.error(new UserNotFoundException(application.email())))
+            .flatMap(user -> loanTypeRepository.findById(application.loanTypeId()))
+            .switchIfEmpty(Mono.error(new TypeNotFoundException(application.loanTypeId())))
+            //.flatMap(loanType -> validateRules(loanType, cmd.amount(), cmd.termMonths()).thenReturn(loanType))
+            .flatMap(loan -> {
+                LoanApplication toSave =  new LoanApplication.Builder()
+                    .email(application.email())
+                    .loanTypeId(application.loanTypeId())
+                    .amount(application.amount())
+                    .termMonths(application.termMonths())
+                    .statusId("1")
+                    .build();
+                return loanApplicationRepository.save(toSave);
+            });
     }
 }

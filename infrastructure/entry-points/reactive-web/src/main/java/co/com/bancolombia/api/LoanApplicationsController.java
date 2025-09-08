@@ -3,9 +3,7 @@ package co.com.bancolombia.api;
 import co.com.bancolombia.api.dto.CreateLoanApplicationRequest;
 import co.com.bancolombia.api.dto.LoanApplicationResponse;
 import co.com.bancolombia.api.mapper.LoanApplicationMapper;
-import co.com.bancolombia.model.loanapplication.util.EmailUtils;
 import co.com.bancolombia.usecase.createloanapplication.input.CreateLoanUseCasePort;
-import co.com.bancolombia.usecase.getloanapplication.input.GetLoanUseCasePort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -22,10 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import org.springframework.web.bind.annotation.RequestBody;
-
 
 @Slf4j
 @Component
@@ -35,8 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "Solicitudes", description = "Endpoints para crear y consultar solicitudes de préstamo")
 public class LoanApplicationController {
 
-    private final CreateLoanUseCasePort createUC;
-    private final GetLoanUseCasePort getUC;
+    private final CreateLoanUseCasePort createLoan;
     private final RequestValidator requestValidator;
     private final LoanApplicationMapper mapper;
 
@@ -166,9 +160,9 @@ public class LoanApplicationController {
         @org.springframework.web.bind.annotation.RequestBody CreateLoanApplicationRequest request
     ) {
         return requestValidator.validate(request)
-            .doOnNext(dto -> log.debug("validated request email={}", EmailUtils.maskEmail(dto.email())))
+            .doOnNext(dto -> log.debug("validated request identityDocument={}", dto.identityDocument()))
             .map(mapper::toCommand)
-            .flatMap(createUC::execute)
+            .flatMap(createLoan::execute)
             .map(mapper::toResponse)
             .doOnSuccess(r -> log.info("POST /api/v1/solicitud <- 201 Created"))
             .doOnError(e -> log.warn("POST /api/v1/solicitud <- error: {}", e.toString()))

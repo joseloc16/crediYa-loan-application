@@ -4,5 +4,5 @@ import co.com.bancolombia.model.loanapplication.dto.User;
 import reactor.core.publisher.Mono;
 
 public interface UserGateway {
-    Mono<User> findByEmail(String email);
+    Mono<User> findByIdentityDocument(String identityDocument);
 }

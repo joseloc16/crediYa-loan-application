@@ -1,0 +1,40 @@
+package co.com.bancolombia.usecase.createloanapplication;
+
+import co.com.bancolombia.model.loanapplication.LoanApplication;
+import co.com.bancolombia.model.loanapplication.exceptions.TypeNotFoundException;
+import co.com.bancolombia.model.loanapplication.exceptions.UserNotFoundException;
+import co.com.bancolombia.model.loanapplication.gateways.LoanApplicationRepository;
+import co.com.bancolombia.model.loanapplication.gateways.LoanStatusRepository;
+import co.com.bancolombia.model.loanapplication.gateways.LoanTypeRepository;
+import co.com.bancolombia.model.loanapplication.gateways.UserGateway;
+import co.com.bancolombia.usecase.createloanapplication.input.CreateLoanUseCasePort;
+import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
+
+@RequiredArgsConstructor
+public class CreateLoanApplicationUseCase implements CreateLoanUseCasePort {
+
+    private final UserGateway userGateway;
+    private final LoanTypeRepository loanTypeRepository;
+    private final LoanStatusRepository loanStatusRepository;
+    private final LoanApplicationRepository loanApplicationRepository;
+
+    @Override
+    public Mono<LoanApplication> execute(CreateLoanApplicationCommand  application) {
+        return userGateway.findByEmail(application.email())
+            .switchIfEmpty(Mono.error(new UserNotFoundException(application.email())))
+            .flatMap(user -> loanTypeRepository.findById(application.loanTypeId()))
+            .switchIfEmpty(Mono.error(new TypeNotFoundException(application.loanTypeId())))
+            //.flatMap(loanType -> validateRules(loanType, cmd.amount(), cmd.termMonths()).thenReturn(loanType))
+            .flatMap(loan -> {
+                LoanApplication toSave =  new LoanApplication.Builder()
+                    .email(application.email())
+                    .loanTypeId(application.loanTypeId())
+                    .amount(application.amount())
+                    .termMonths(application.termMonths())
+                    .statusId("1")
+                    .build();
+                return loanApplicationRepository.save(toSave);
+            });
+    }
+}

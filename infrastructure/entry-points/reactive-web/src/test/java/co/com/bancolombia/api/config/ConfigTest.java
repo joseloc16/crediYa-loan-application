@@ -1,6 +1,6 @@
 package co.com.bancolombia.api.config;
 
-import co.com.bancolombia.api.LoanApplicationController;
+import co.com.bancolombia.api.LoanApplicationsController;
 import co.com.bancolombia.api.RouterRest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@ContextConfiguration(classes = {RouterRest.class, LoanApplicationController.class})
+@ContextConfiguration(classes = {RouterRest.class, LoanApplicationsController.class})
 @WebFluxTest
 @Import({CorsConfig.class, SecurityHeadersConfig.class})
 class ConfigTest {

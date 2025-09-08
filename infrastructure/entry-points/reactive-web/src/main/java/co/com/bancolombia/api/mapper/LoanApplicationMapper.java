@@ -11,12 +11,12 @@ import org.mapstruct.Mapping;
 public interface LoanApplicationMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "statusId", ignore = true)
+    @Mapping(target = "statusCode", ignore = true)
     LoanApplication toDomain(CreateLoanApplicationCommand cmd);
 
     CreateLoanApplicationCommand toCommand(CreateLoanApplicationRequest request);
 
-    @Mapping(target = "status", source = "statusId")
+    @Mapping(target = "status", source = "statusCode")
     LoanApplicationResponse toResponse(LoanApplication loan);
 
 }

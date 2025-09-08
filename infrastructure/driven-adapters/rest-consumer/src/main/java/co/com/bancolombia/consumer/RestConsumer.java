@@ -1,39 +1,28 @@
 package co.com.bancolombia.consumer;
 
 import co.com.bancolombia.model.loanapplication.dto.User;
-import co.com.bancolombia.model.loanapplication.exceptions.ExternalServiceException;
 import co.com.bancolombia.model.loanapplication.exceptions.UserNotFoundException;
-import co.com.bancolombia.model.loanapplication.gateways.UserGateway;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import co.com.bancolombia.model.loanapplication.gateways.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RestConsumer implements UserGateway {
+public class RestConsumer implements UserRepository {
 
     private final WebClient authWebClient;
+    private static final String USUARIO_URL = "/api/v1/usuarios";
 
     @Override
-    //@CircuitBreaker(name = "auth-find-by-email", fallbackMethod = "findByEmailFallback")
-    public Mono<User> findByEmail(String email) {
+    public Mono<User> findByDocumentNumber(String documentNumber) {
         return authWebClient.get()
-            .uri(u -> u.path("/api/v1/usuarios").queryParam("email", email).build())
+            .uri(u -> u.path(USUARIO_URL).queryParam("documentNumber", documentNumber).build())
             .retrieve()
-            .onStatus(s -> s.value() == 404, r -> Mono.error(new UserNotFoundException(email)))
+            .onStatus(s -> s.value() == 404, r -> Mono.error(new UserNotFoundException(documentNumber)))
             .bodyToMono(User.class);
     }
-
-    //@SuppressWarnings("unused")
-    //private Mono<Boolean> existsByEmailFallback(String email, Throwable ex) {
-    //    log.warn("Fallback triggered for existsByEmail, cause: {}", ex.toString());
-    //    return Mono.error(new ExternalServiceException("Auth unavailable", ex));
-    //}
 }

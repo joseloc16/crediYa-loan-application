@@ -9,5 +9,5 @@ import java.util.UUID;
 
 public interface LoanReactiveRepository
     extends ReactiveCrudRepository<LoanApplicationEntity, UUID>, ReactiveQueryByExampleExecutor<LoanApplicationEntity> {
-    Mono<LoanApplicationEntity> findByEmail(String email);
+    Mono<LoanApplicationEntity> findByDocumentNumber(String email);
 }

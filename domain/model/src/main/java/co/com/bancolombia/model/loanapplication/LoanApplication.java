@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 
 public record LoanApplication(
     String id,
-    String email,
+    String documentNumber,
     BigDecimal amount,
     Integer termMonths,
     String loanTypeId,
-    String statusId
+    String statusCode
 ) {
     public static class Builder {
         private String id;
@@ -16,14 +16,14 @@ public record LoanApplication(
         private BigDecimal amount;
         private Integer termMonths;
         private String loanTypeId;
-        private String statusId;
+        private String statusCode;
 
         public Builder id(String id) {
             this.id = id;
             return this;
         }
 
-        public Builder email(String email) {
+        public Builder documentNumber(String email) {
             this.email = email;
             return this;
         }
@@ -43,13 +43,13 @@ public record LoanApplication(
             return this;
         }
 
-        public Builder statusId(String statusId) {
-            this.statusId = statusId;
+        public Builder statusCode(String statusCode) {
+            this.statusCode = statusCode;
             return this;
         }
 
         public LoanApplication build() {
-            return new LoanApplication(id, email, amount, termMonths, loanTypeId, statusId);
+            return new LoanApplication(id, email, amount, termMonths, loanTypeId, statusCode);
         }
     }
 }

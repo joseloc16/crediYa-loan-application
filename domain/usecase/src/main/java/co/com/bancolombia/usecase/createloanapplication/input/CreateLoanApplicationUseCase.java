@@ -4,6 +4,6 @@ import co.com.bancolombia.model.loanapplication.LoanApplication;
 import co.com.bancolombia.usecase.createloanapplication.CreateLoanApplicationCommand;
 import reactor.core.publisher.Mono;
 
-public interface CreateLoanUseCasePort {
-    Mono<LoanApplication> execute(CreateLoanApplicationCommand application);
+public interface CreateLoanApplicationUseCase {
+    Mono<LoanApplication> create(CreateLoanApplicationCommand application);
 }

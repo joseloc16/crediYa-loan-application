@@ -1,28 +1,37 @@
 package co.com.bancolombia.api.dto;
 
-
-import jakarta.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 
 public record CreateLoanApplicationRequest(
 
-    @NotNull @DecimalMin("1000.00")
+    @NotNull(message = "Documento de identidad es requerido")
+    @NotBlank(message = "Documento de identidad no debe estar vacio")
+    @JsonProperty("documento_identidad")
+    String documentNumber,
+
+    @NotNull(message = "El monto es requerido")
+    //@DecimalMin("1000.00")
+    @JsonProperty("monto")
     BigDecimal amount,
 
-    @NotNull @Min(3)
+    @NotNull(message = "El plazo en meses es requerido")
+    //@Min(3)
+    @JsonProperty("plazo")
     Integer termMonths,
 
-    @NotBlank(message = "email is required")
-    @Email(message = "email format is not valid",
-        regexp = "^(?!\\.)[A-Za-z0-9._%+-]+(?<!\\.)@"
-            + "[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
-            + "(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*"
-            + "\\.[A-Za-z]{2,}$")
     String email,
 
-    @NotNull
-    String loanTypeId
-) {
-}
+    @NotNull(message = "El estado de solicitud es requerido")
+    @NotBlank(message = "El estado de solicitud no debe estar vacio")
+    @JsonProperty("estado")
+    String stateId,
 
+    @NotNull(message = "El tipo de solicitud es requerido")
+    @NotBlank(message = "El tipo de solicitud no debe estar vacio")
+    @JsonProperty("tipo_prestamo")
+    String loanTypeId
+) {}

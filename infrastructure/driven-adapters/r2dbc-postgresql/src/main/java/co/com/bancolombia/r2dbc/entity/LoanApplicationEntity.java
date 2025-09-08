@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-///import java.util.UUID;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -20,7 +19,7 @@ import java.util.UUID;
 public class LoanApplicationEntity {
     @Id
     @Column("id_solicitud")
-    private UUID id;//UUID
+    private UUID id;
 
     @Column("monto")
     private BigDecimal amount;
@@ -29,11 +28,11 @@ public class LoanApplicationEntity {
     private Integer termMonths;
 
     @Column("email")
-    private String email;
+    private String documentNumber;
 
     @Column("id_tipo_prestamo")
     private String loanTypeId;
 
     @Column("id_estado")
-    private String statusId;
+    private String statusCode;
 }

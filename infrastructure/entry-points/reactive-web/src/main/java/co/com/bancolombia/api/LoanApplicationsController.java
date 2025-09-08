@@ -3,7 +3,7 @@ package co.com.bancolombia.api;
 import co.com.bancolombia.api.dto.CreateLoanApplicationRequest;
 import co.com.bancolombia.api.dto.LoanApplicationResponse;
 import co.com.bancolombia.api.mapper.LoanApplicationMapper;
-import co.com.bancolombia.usecase.createloanapplication.input.CreateLoanUseCasePort;
+import co.com.bancolombia.usecase.createloanapplication.input.CreateLoanApplicationUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -28,9 +28,9 @@ import reactor.core.publisher.Mono;
 @RequestMapping(value = "/api/v1/solicitud", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "Solicitudes", description = "Endpoints para crear y consultar solicitudes de préstamo")
-public class LoanApplicationController {
+public class LoanApplicationsController {
 
-    private final CreateLoanUseCasePort createLoan;
+    private final CreateLoanApplicationUseCase loanUseCase;
     private final RequestValidator requestValidator;
     private final LoanApplicationMapper mapper;
 
@@ -156,13 +156,13 @@ public class LoanApplicationController {
             )
         )
     })
-    public Mono<LoanApplicationResponse> create(
+    public Mono<LoanApplicationResponse> createLoanApplication(
         @org.springframework.web.bind.annotation.RequestBody CreateLoanApplicationRequest request
     ) {
         return requestValidator.validate(request)
-            .doOnNext(dto -> log.debug("validated request identityDocument={}", dto.identityDocument()))
+            .doOnNext(dto -> log.debug("validated request documentNumber={}", dto.documentNumber()))
             .map(mapper::toCommand)
-            .flatMap(createLoan::execute)
+            .flatMap(loanUseCase::create)
             .map(mapper::toResponse)
             .doOnSuccess(r -> log.info("POST /api/v1/solicitud <- 201 Created"))
             .doOnError(e -> log.warn("POST /api/v1/solicitud <- error: {}", e.toString()))

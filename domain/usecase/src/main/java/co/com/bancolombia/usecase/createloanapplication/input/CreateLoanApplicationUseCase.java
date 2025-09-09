@@ -5,5 +5,5 @@ import co.com.bancolombia.usecase.createloanapplication.CreateLoanApplicationCom
 import reactor.core.publisher.Mono;
 
 public interface CreateLoanApplicationUseCase {
-    Mono<LoanApplication> create(CreateLoanApplicationCommand application);
+    Mono<LoanApplication> applyFor(CreateLoanApplicationCommand application);
 }

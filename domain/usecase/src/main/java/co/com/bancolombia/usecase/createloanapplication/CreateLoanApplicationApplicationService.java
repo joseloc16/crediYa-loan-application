@@ -18,7 +18,7 @@ public class CreateLoanApplicationApplicationService implements CreateLoanApplic
     private final LoanApplicationRepository loanApplicationRepository;
 
     @Override
-    public Mono<LoanApplication> create(CreateLoanApplicationCommand  application) {
+    public Mono<LoanApplication> applyFor(CreateLoanApplicationCommand  application) {
         return userRepository.findByDocumentNumber(application.documentNumber())
             .switchIfEmpty(Mono.error(new UserNotFoundException(application.documentNumber())))
             .flatMap(user -> loanTypeRepository.findById(application.loanTypeId()))

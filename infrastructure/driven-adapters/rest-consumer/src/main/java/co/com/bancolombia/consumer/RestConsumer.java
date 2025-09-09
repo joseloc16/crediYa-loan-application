@@ -20,7 +20,7 @@ public class RestConsumer implements UserRepository {
     @Override
     public Mono<User> findByDocumentNumber(String documentNumber) {
         return authWebClient.get()
-            .uri(u -> u.path(USUARIO_URL).queryParam("documentNumber", documentNumber).build())
+            .uri(u -> u.path(USUARIO_URL + "/{documentNumber}").build(documentNumber))
             .retrieve()
             .onStatus(s -> s.value() == 404, r -> Mono.error(new UserNotFoundException(documentNumber)))
             .bodyToMono(User.class);

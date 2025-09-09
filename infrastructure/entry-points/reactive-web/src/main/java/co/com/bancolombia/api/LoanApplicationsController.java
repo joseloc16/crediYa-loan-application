@@ -162,7 +162,7 @@ public class LoanApplicationsController {
         return requestValidator.validate(request)
             .doOnNext(dto -> log.debug("validated request documentNumber={}", dto.documentNumber()))
             .map(mapper::toCommand)
-            .flatMap(loanUseCase::create)
+            .flatMap(loanUseCase::applyFor)
             .map(mapper::toResponse)
             .doOnSuccess(r -> log.info("POST /api/v1/solicitud <- 201 Created"))
             .doOnError(e -> log.warn("POST /api/v1/solicitud <- error: {}", e.toString()))
